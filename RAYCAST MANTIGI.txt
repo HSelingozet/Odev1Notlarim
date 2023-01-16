@@ -1,0 +1,42 @@
+using Newtonsoft.Json.Serialization;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.AI;
+
+[RequireComponent(typeof(NavMeshAgent))]
+
+public class ClicktoMove : MonoBehaviour
+{
+    public float speed;
+    private Camera _camera;
+    private void Start()
+    {
+        _camera = Camera.main; //Main camera variable
+    }
+    private void Update()
+    {
+        if(Input.GetButton("Fire1"))
+        {
+            MoveWithRay();
+        }
+    }
+
+    void MoveWithRay()
+    {
+        Vector3 mousePos = Input.mousePosition; // we get our mouse position
+        mousePos.z = _camera.transform.position.z; // we need to add some depth
+        Ray ray = _camera.ScreenPointToRay(mousePos); //it provide we sent light from mouse
+
+        RaycastHit hit; // if we hit sth RaycastHit store that
+
+        if(Physics.Raycast(ray, out hit,100))
+        {
+            Vector3 move = hit.point;
+            move.y = transform.position.y; //we dont want to move out object at y coordinate
+            move.z= transform.position.z;
+            transform.position = Vector3.MoveTowards(transform.position, move, speed);
+
+        }
+    }
+}
